@@ -1,0 +1,33 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.Python
+.ruff_cache/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# --- Streamlit ---
+.streamlit/secrets.toml
+
+# --- Logs ---
+logs/
+*.log
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Notebook checkpoints ---
+.ipynb_checkpoints/
+
+# --- Large generated model artifacts (not the CSV/JSON dashboard data) ---
+data/models/
+*.h5
+*.pt
+*.pkl
+*.joblib

@@ -1,0 +1,18 @@
+# ---- Dashboard runtime (required to run streamlit_app.py) ----
+streamlit>=1.57
+plotly>=5.22
+pandas>=2.2
+numpy>=1.26
+
+# ---- Optional: PDF summary report on the Downloads page ----
+reportlab>=4.1
+
+# ---- Optional: PNG figure export (falls back to interactive HTML) ----
+kaleido>=0.2
+
+# ---- Artifact builder only (scripts/build_artifacts.py) ----
+# Not needed if you copy the notebook's Phase 10 exports into data/processed.
+statsmodels>=0.14
+scikit-learn>=1.4
+xgboost>=2.0
+torch>=2.2          # LSTM; use --skip-lstm if you cannot install it

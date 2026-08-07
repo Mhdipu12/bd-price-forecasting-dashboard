@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "generated_at": "2026-08-08T01:38:57",
+  "dataset": {
+    "last_observation": "2026-06-30",
+    "forecast_start": "2026-07-01",
+    "forecast_end": "2026-08-29",
+    "max_horizon_days": 60,
+    "test_days": 180
+  },
+  "best_model": {
+    "Onion": "Ensemble",
+    "Potato": "SARIMA",
+    "Soybean Oil": "SARIMA"
+  },
+  "ensemble_weights": {
+    "Onion": {
+      "SARIMA": 0.3822,
+      "XGBoost": 0.2738,
+      "LSTM": 0.344
+    },
+    "Potato": {
+      "SARIMA": 0.4309,
+      "XGBoost": 0.2673,
+      "LSTM": 0.3018
+    },
+    "Soybean Oil": {
+      "SARIMA": 0.5736,
+      "XGBoost": 0.2952,
+      "LSTM": 0.1312
+    }
+  },
+  "sarima_orders": {
+    "Onion": {
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "seasonal_order": [
+        0,
+        0,
+        1,
+        7
+      ],
+      "aic": 8349.674146222838
+    },
+    "Potato": {
+      "order": [
+        2,
+        1,
+        2
+      ],
+      "seasonal_order": [
+        0,
+        0,
+        1,
+        7
+      ],
+      "aic": 5037.504010196848
+    },
+    "Soybean Oil": {
+      "order": [
+        2,
+        1,
+        2
+      ],
+      "seasonal_order": [
+        0,
+        0,
+        1,
+        7
+      ],
+      "aic": 5207.974197437945
+    }
+  },
+  "commodities": {
+    "Onion": {
+      "drivers": "Onion is the most spike-prone item in the basket: domestic supply is concentrated in a short harvest, and India's export policy transmits to Dhaka bazaars within days.",
+      "last_price": 40.0,
+      "sample_mean": 64.78,
+      "sample_start": "2021-05-17",
+      "volatility_30d": 1.9531
+    },
+    "Potato": {
+      "drivers": "Potato is the most storable staple in the basket, so its price is set less by daily supply than by cold-storage release decisions and carrying costs.",
+      "last_price": 27.0,
+      "sample_mean": 31.77,
+      "sample_start": "2021-05-17",
+      "volatility_30d": 4.1494
+    },
+    "Soybean Oil": {
+      "drivers": "Soybean oil is almost entirely imported, so its retail price tracks global vegetable-oil markets and the taka exchange rate more closely than local conditions.",
+      "last_price": 190.0,
+      "sample_mean": 162.21,
+      "sample_start": "2021-05-17",
+      "volatility_30d": 0.1386
+    }
+  }
+}

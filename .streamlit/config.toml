@@ -1,0 +1,83 @@
+# Streamlit theme for the BD essential-goods price intelligence dashboard.
+# Both [theme.light] and [theme.dark] are defined so the app's own Light/Dark
+# toggle and Streamlit's settings menu stay in agreement.
+
+[theme]
+base = "light"
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+headingFont = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap"
+codeFont = "'JetBrains Mono':https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+baseFontSize = 15
+baseRadius = "12px"
+buttonRadius = "10px"
+showWidgetBorder = true
+showSidebarBorder = true
+linkUnderline = false
+headingFontSizes = ["30px", "20px", "17px", "15px", "14px", "13px"]
+headingFontWeights = [700, 650, 620, 600, 600, 600]
+chartCategoricalColors = [
+    "#2563EB", "#16A34A", "#DC6803", "#7C3AED", "#DC2626", "#0891B2", "#64748B",
+]
+chartSequentialColors = [
+    "#EFF6FF", "#DBEAFE", "#BFDBFE", "#93C5FD", "#60A5FA",
+    "#3B82F6", "#2563EB", "#1D4ED8", "#1E40AF", "#172554",
+]
+
+[theme.light]
+primaryColor = "#2563EB"
+backgroundColor = "#F8FAFC"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#1E293B"
+borderColor = "#E2E8F0"
+linkColor = "#2563EB"
+codeBackgroundColor = "#F1F5F9"
+codeTextColor = "#0F172A"
+dataframeBorderColor = "#E2E8F0"
+dataframeHeaderBackgroundColor = "#F1F5F9"
+greenColor = "#16A34A"
+redColor = "#DC2626"
+orangeColor = "#F59E0B"
+blueColor = "#2563EB"
+violetColor = "#7C3AED"
+grayColor = "#64748B"
+
+[theme.light.sidebar]
+backgroundColor = "#0F172A"
+secondaryBackgroundColor = "#1E293B"
+codeBackgroundColor = "#1E293B"
+textColor = "#E2E8F0"
+borderColor = "#1E293B"
+primaryColor = "#60A5FA"
+linkColor = "#93C5FD"
+
+[theme.dark]
+primaryColor = "#60A5FA"
+backgroundColor = "#0B1220"
+secondaryBackgroundColor = "#111C31"
+textColor = "#E2E8F0"
+borderColor = "#1E2E4A"
+linkColor = "#93C5FD"
+codeBackgroundColor = "#16243D"
+codeTextColor = "#E2E8F0"
+dataframeBorderColor = "#1E2E4A"
+dataframeHeaderBackgroundColor = "#16243D"
+greenColor = "#4ADE80"
+redColor = "#F87171"
+orangeColor = "#FBBF24"
+blueColor = "#60A5FA"
+violetColor = "#A78BFA"
+grayColor = "#94A3B8"
+
+[theme.dark.sidebar]
+backgroundColor = "#070E1B"
+secondaryBackgroundColor = "#111C31"
+codeBackgroundColor = "#111C31"
+textColor = "#CBD5E1"
+borderColor = "#1E2E4A"
+primaryColor = "#60A5FA"
+
+[server]
+maxUploadSize = 20
+
+[browser]
+gatherUsageStats = false
