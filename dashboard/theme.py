@@ -152,7 +152,7 @@ def _css(palette: Palette, mode: str) -> str:
     border-bottom: 1px solid var(--bdp-border);
 }}
 .block-container {{
-    padding-top: 2.1rem;
+    padding-top: 5rem;
     padding-bottom: 3rem;
     max-width: 1480px;
 }}
