@@ -150,7 +150,7 @@ def price_history_vs_forecast(
         )
         figure.add_vline(
             x=window["date"].iloc[-1],
-            line={"color": palette.text_muted, "width": 1, "dash": "dash"},
+            line={"color": palette.primary, "width": 2.5, "dash": "dash"},
         )
 
     if marker_date is not None and not forecast.empty:

@@ -198,8 +198,8 @@ class Thresholds:
 class Settings:
     """Application-wide settings bundle."""
 
-    app_title: str = "Bangladesh Essential Goods Price Intelligence"
-    app_short_title: str = "BD Price Intelligence"
+    app_title: str = "Commodity Price Monitoring Dashboard"
+    app_short_title: str = "Commodity Price Monitoring Dashboard"
     app_icon: str = ":material/monitoring:"
     subtitle: str = (
         "Forecasting price inflation of daily essential goods — a comparative study "

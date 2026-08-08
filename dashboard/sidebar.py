@@ -60,7 +60,7 @@ def render_brand() -> None:
     st.sidebar.html(
         '<div class="bdp-brand">'
         '<div class="bdp-brand-mark">BD</div>'
-        '<div class="bdp-brand-text"><b>Price Intelligence</b>'
+        '<div class="bdp-brand-text"><b>Commodity Price Monitoring Dashboard</b>'
         "<span>Essential goods · Bangladesh</span></div></div>"
     )
 
