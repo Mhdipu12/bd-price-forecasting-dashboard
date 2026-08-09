@@ -40,7 +40,6 @@ if path.empty:
 # --------------------------------------------------------------------------
 peak_idx = int(path["forecast"].idxmax())
 trough_idx = int(path["forecast"].idxmin())
-band_width = float((path["upper"] - path["lower"]).iloc[-1])
 
 kpi_row(
     [
@@ -87,21 +86,6 @@ kpi_row(
             tooltip="Lowest point of the forecast path within the selected horizon.",
             icon="trend_down",
             tone="success",
-        ),
-        KpiCard(
-            label="Uncertainty at horizon end",
-            value=f"±{band_width / 2:,.2f}",
-            unit=meta.unit,
-            delta=None,
-            footnote=f"95% interval half-width · ±{band_width / 2 / snapshot.current_price * 100:,.1f}% "
-            f"of today's price",
-            tooltip=(
-                "Recursive multi-step forecasting compounds error, so the interval widens "
-                "roughly with the square root of the horizon. Plan against this band, not "
-                "the central line."
-            ),
-            icon="shield",
-            tone="neutral",
         ),
     ],
     palette,
