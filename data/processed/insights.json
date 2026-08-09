@@ -1,33 +1,34 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-08T01:38:57",
+  "generated_at": "2026-08-09T18:59:05",
+  "source": "research notebook Phase 10",
   "dataset": {
-    "last_observation": "2026-06-30",
-    "forecast_start": "2026-07-01",
-    "forecast_end": "2026-08-29",
+    "last_observation": "2026-07-31",
+    "forecast_start": "2026-08-01",
+    "forecast_end": "2026-09-29",
     "max_horizon_days": 60,
     "test_days": 180
   },
   "best_model": {
-    "Onion": "Ensemble",
+    "Onion": "SARIMA",
     "Potato": "SARIMA",
     "Soybean Oil": "SARIMA"
   },
   "ensemble_weights": {
     "Onion": {
-      "SARIMA": 0.3822,
-      "XGBoost": 0.2738,
-      "LSTM": 0.344
+      "SARIMA": 0.4172,
+      "XGBoost": 0.4055,
+      "LSTM": 0.1773
     },
     "Potato": {
-      "SARIMA": 0.4309,
-      "XGBoost": 0.2673,
-      "LSTM": 0.3018
+      "SARIMA": 0.5147,
+      "XGBoost": 0.3977,
+      "LSTM": 0.0876
     },
     "Soybean Oil": {
-      "SARIMA": 0.5736,
-      "XGBoost": 0.2952,
-      "LSTM": 0.1312
+      "SARIMA": 0.5944,
+      "XGBoost": 0.3818,
+      "LSTM": 0.0238
     }
   },
   "sarima_orders": {
@@ -35,66 +36,66 @@
       "order": [
         0,
         1,
-        2
+        1
       ],
       "seasonal_order": [
-        0,
-        0,
         1,
+        0,
+        0,
         7
       ],
-      "aic": 8349.674146222838
+      "aic": 6300.774521524192
     },
     "Potato": {
       "order": [
-        2,
+        1,
         1,
         2
       ],
       "seasonal_order": [
         0,
         0,
-        1,
+        0,
         7
       ],
-      "aic": 5037.504010196848
+      "aic": 3562.081240864877
     },
     "Soybean Oil": {
       "order": [
-        2,
         1,
-        2
+        1,
+        0
       ],
       "seasonal_order": [
-        0,
-        0,
         1,
+        0,
+        0,
         7
       ],
-      "aic": 5207.974197437945
+      "aic": 3722.033915551303
     }
   },
   "commodities": {
     "Onion": {
-      "drivers": "Onion is the most spike-prone item in the basket: domestic supply is concentrated in a short harvest, and India's export policy transmits to Dhaka bazaars within days.",
-      "last_price": 40.0,
-      "sample_mean": 64.78,
+      "drivers": "",
+      "last_price": 57.0,
+      "sample_mean": 64.37,
       "sample_start": "2021-05-17",
-      "volatility_30d": 1.9531
+      "volatility_30d": 4.2168
     },
     "Potato": {
-      "drivers": "Potato is the most storable staple in the basket, so its price is set less by daily supply than by cold-storage release decisions and carrying costs.",
+      "drivers": "",
       "last_price": 27.0,
-      "sample_mean": 31.77,
+      "sample_mean": 31.64,
       "sample_start": "2021-05-17",
-      "volatility_30d": 4.1494
+      "volatility_30d": 0.0
     },
     "Soybean Oil": {
-      "drivers": "Soybean oil is almost entirely imported, so its retail price tracks global vegetable-oil markets and the taka exchange rate more closely than local conditions.",
-      "last_price": 190.0,
-      "sample_mean": 162.21,
+      "drivers": "",
+      "last_price": 191.0,
+      "sample_mean": 162.62,
       "sample_start": "2021-05-17",
-      "volatility_30d": 0.1386
+      "volatility_30d": 0.0961
     }
   }
 }
