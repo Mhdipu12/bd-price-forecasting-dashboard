@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import numpy as np
 import streamlit as st
 
 from dashboard import charts
 from dashboard.components import KpiCard, empty_state, footer, kpi_row, page_header, section
-from dashboard.config import COMMODITY_BY_KEY, SETTINGS, format_date
+from dashboard.config import COMMODITY_BY_KEY, SETTINGS
 from dashboard.context import get_context
 from dashboard.theme import plotly_config
 from dashboard.transforms import (
@@ -46,79 +47,79 @@ monthly_series = (
 # Summary cards
 # --------------------------------------------------------------------------
 if monthly_series.empty:
-    highest = lowest = average = volatility = float("nan")
-    highest_date = lowest_date = None
+    average = float("nan")
 else:
-    highest = float(monthly_series.max())
-    lowest = float(monthly_series.min())
     average = float(monthly_series.mean())
-    volatility = float(monthly_series.std())
-    highest_date = inflation.loc[monthly_series.idxmax(), "date"] if not inflation.empty else None
-    lowest_date = inflation.loc[monthly_series.idxmin(), "date"] if not inflation.empty else None
+
+
+def _direction(value: float) -> tuple[str, str, str]:
+    """Classify a 30-day rate as decreasing/stable/increasing.
+
+    Returns ``(arrow_and_word, status_tone, icon_name)``. The stable band
+    reuses the app-wide "broadly stable" threshold so this page agrees with
+    the regime classification shown elsewhere in the dashboard.
+    """
+    threshold = SETTINGS.thresholds.stable_change
+    if not np.isfinite(value):
+        return "→ Stable", "flat", "trend_flat"
+    if value >= threshold:
+        return "↑ Increasing", "up", "trend_up"
+    if value <= -threshold:
+        return "↓ Decreasing", "down", "trend_down"
+    return "→ Stable", "flat", "trend_flat"
+
+
+current_status, current_tone, current_icon = _direction(snapshot.current_inflation)
+forecast_status, forecast_tone, forecast_icon = _direction(snapshot.forecast_inflation)
+_tone_for_status = {"up": "danger", "down": "success", "flat": "neutral"}
 
 kpi_row(
     [
         KpiCard(
-            label="Highest inflation",
-            value=f"{highest:+.2f}",
-            unit="% / 30d",
-            delta=None,
-            footnote=f"peak on {format_date(highest_date)}",
-            tooltip="Largest realised 30-day price increase in the sample.",
-            icon="alert",
-            tone="danger",
+            label="Current 30-day inflation",
+            value=f"{snapshot.current_inflation:+.2f}" if np.isfinite(snapshot.current_inflation) else "—",
+            unit="%",
+            footnote="vs previous 30 days",
+            tooltip="Latest realised 30-day price change for this commodity, versus the prior 30-day period.",
+            icon=current_icon,
+            tone=_tone_for_status[current_tone],
+            status_text=current_status,
+            status_tone=current_tone,
         ),
         KpiCard(
-            label="Lowest inflation",
-            value=f"{lowest:+.2f}",
-            unit="% / 30d",
-            delta=None,
-            footnote=f"trough on {format_date(lowest_date)}",
-            tooltip="Largest realised 30-day price decline in the sample.",
-            icon="trend_down",
-            tone="success",
-        ),
-        KpiCard(
-            label="Average inflation",
-            value=f"{average:+.2f}",
-            unit="% / 30d",
-            delta=snapshot.current_inflation - average,
-            footnote="sample mean · delta shows today versus normal",
-            tooltip="Mean realised 30-day inflation across the whole sample.",
+            label="Historical average",
+            value=f"{average:+.2f}" if np.isfinite(average) else "—",
+            unit="%",
+            footnote="historical 30-day average",
+            tooltip=f"Mean realised 30-day price-change rate for {meta.label} across the full sample.",
             icon="percent",
-            tone="primary",
+            tone="neutral",
+            hide_delta=True,
             spark=monthly_series.tail(SETTINGS.sparkline_days).tolist(),
         ),
         KpiCard(
-            label="Inflation volatility",
-            value=f"{volatility:,.2f}",
-            unit="pp",
-            delta=None,
-            footnote="standard deviation of the 30-day rate",
-            tooltip=(
-                "How much the inflation rate itself swings. High values mean price shocks "
-                "arrive suddenly rather than building gradually."
-            ),
-            icon="activity",
-            tone="warning",
-        ),
-        KpiCard(
             label="Forecast inflation",
-            value=f"{snapshot.forecast_inflation:+.2f}",
-            unit="% / 30d",
-            delta=snapshot.forecast_inflation - snapshot.current_inflation,
-            footnote=f"at {format_date(snapshot.forecast_date)}",
-            tooltip=(
-                "Forward 30-day rate implied by the forecast path. The delta compares it "
-                "with the realised rate today."
-            ),
+            value=f"{snapshot.forecast_inflation:+.2f}" if np.isfinite(snapshot.forecast_inflation) else "—",
+            unit="%",
+            footnote=f"next 30 days · {ctx.model}",
+            tooltip="Forward 30-day price-change rate implied by the selected forecast model.",
             icon="target",
-            tone="danger"
-            if snapshot.forecast_inflation > SETTINGS.thresholds.inflation_alert
-            else "primary",
+            tone="primary",
+            hide_delta=True,
             spark=((path["forecast"] / snapshot.current_price - 1) * 100).tolist()
             if not path.empty
             else [],
+        ),
+        KpiCard(
+            label="Expected price trend",
+            value=forecast_status,
+            footnote=f"{snapshot.forecast_inflation:+.2f}% expected over 30 days"
+            if np.isfinite(snapshot.forecast_inflation)
+            else "no forecast available",
+            tooltip="Human-readable direction implied by the forecast inflation rate.",
+            icon=forecast_icon,
+            tone=_tone_for_status[forecast_tone],
+            hide_delta=True,
         ),
     ],
     palette,

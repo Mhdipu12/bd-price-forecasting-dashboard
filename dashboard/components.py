@@ -239,10 +239,21 @@ class KpiCard:
     icon: str = "price"
     tone: Tone = "primary"
     spark: Sequence[float] = ()
+    #: Free-form status pill (e.g. "↓ Decreasing") that overrides the
+    #: delta-vs-baseline pill below. Leave empty to use ``delta`` instead.
+    status_text: str = ""
+    status_tone: Literal["up", "down", "flat"] = "flat"
+    #: Hide the pill entirely when neither ``status_text`` nor ``delta`` applies.
+    hide_delta: bool = False
 
 
 def _delta_html(card: KpiCard, palette: Palette) -> str:
     """Render the trend arrow / delta pill for a KPI card."""
+    if card.status_text:
+        cls = {"up": "bdp-up", "down": "bdp-down", "flat": "bdp-flat"}[card.status_tone]
+        return f'<span class="bdp-kpi-delta {cls}">{html.escape(card.status_text)}</span>'
+    if card.hide_delta:
+        return ""
     if card.delta is None or not np.isfinite(card.delta):
         return '<span class="bdp-kpi-delta bdp-flat">no change data</span>'
 
