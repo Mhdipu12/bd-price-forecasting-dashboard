@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import date
+
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -11,7 +13,13 @@ from dashboard.components import KpiCard, empty_state, footer, kpi_row, page_hea
 from dashboard.config import COMMODITY_BY_KEY, SETTINGS, format_date
 from dashboard.context import get_context
 from dashboard.theme import plotly_config
-from dashboard.transforms import commodity_forecast, commodity_prices, forecast_table
+from dashboard.transforms import (
+    commodity_forecast,
+    commodity_prices,
+    forecast_row,
+    forecast_table,
+    price_row,
+)
 
 ctx = get_context()
 bundle, filters, palette, mode = ctx.bundle, ctx.filters, ctx.palette, ctx.mode
@@ -34,6 +42,72 @@ if path.empty:
         "Check that `forecast.csv` contains rows for this combination.",
     )
     st.stop()
+
+# --------------------------------------------------------------------------
+# Price on a specific date
+# --------------------------------------------------------------------------
+KEY_LOOKUP_DATE = "price_lookup_date"
+
+lookup_min = prices["date"].min().date()
+lookup_max = path["date"].max().date()
+_lookup_default = st.session_state.get(KEY_LOOKUP_DATE, snapshot.as_of.date())
+if not isinstance(_lookup_default, date):
+    _lookup_default = snapshot.as_of.date()
+st.session_state[KEY_LOOKUP_DATE] = min(max(_lookup_default, lookup_min), lookup_max)
+
+section(
+    "Price on a specific date",
+    "Pick any day, past or future, to read its recorded or forecast price.",
+)
+left, right = st.columns([1, 2], gap="large")
+with left:
+    picked = st.date_input(
+        "Date",
+        min_value=lookup_min,
+        max_value=lookup_max,
+        key=KEY_LOOKUP_DATE,
+        format="DD-MM-YYYY",
+        help="Dates on or before today return the recorded price; later dates "
+        "return this model's forecast.",
+    )
+    st.caption(f"Range: {format_date(pd.Timestamp(lookup_min))} → {format_date(pd.Timestamp(lookup_max))}")
+
+lookup_target = pd.Timestamp(picked)
+if lookup_target <= snapshot.as_of:
+    lookup_source = price_row(prices, lookup_target)
+    lookup_date_resolved = pd.Timestamp(lookup_source["date"])
+    lookup_value = float(lookup_source["price"])
+    lookup_card = KpiCard(
+        label="Price on selected date",
+        value=f"{lookup_value:,.2f}",
+        unit=meta.unit,
+        delta=(lookup_value / snapshot.current_price - 1) * 100,
+        footnote=f"Actual · {format_date(lookup_date_resolved)}",
+        tooltip=f"Recorded price on {format_date(lookup_date_resolved)}.",
+        icon="clock",
+        tone="neutral",
+    )
+else:
+    lookup_source = forecast_row(path, lookup_target)
+    lookup_date_resolved = pd.Timestamp(lookup_source["date"])
+    lookup_value = float(lookup_source["forecast"])
+    lookup_lower = float(lookup_source["lower"])
+    lookup_upper = float(lookup_source["upper"])
+    lookup_card = KpiCard(
+        label="Price on selected date",
+        value=f"{lookup_value:,.2f}",
+        unit=meta.unit,
+        delta=(lookup_value / snapshot.current_price - 1) * 100,
+        footnote=(
+            f"{ctx.model} forecast · {format_date(lookup_date_resolved)} · "
+            f"95% CI {lookup_lower:,.2f}–{lookup_upper:,.2f}"
+        ),
+        tooltip=f"{ctx.model} forecast for {format_date(lookup_date_resolved)}.",
+        icon="target",
+        tone="primary",
+    )
+with right:
+    kpi_row([lookup_card], palette)
 
 # --------------------------------------------------------------------------
 # Forecast KPIs
@@ -107,6 +181,7 @@ figure = charts.price_history_vs_forecast(
     palette,
     lookback_days=0,
     marker_date=snapshot.forecast_date,
+    lookup_date=lookup_date_resolved,
     range_selector=True,
     height=520,
 )

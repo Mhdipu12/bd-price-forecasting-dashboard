@@ -84,6 +84,7 @@ def price_history_vs_forecast(
     palette: Palette,
     lookback_days: int = 365,
     marker_date: pd.Timestamp | None = None,
+    lookup_date: pd.Timestamp | None = None,
     range_selector: bool = False,
     height: int = 400,
 ) -> go.Figure:
@@ -100,6 +101,9 @@ def price_history_vs_forecast(
         palette: Active palette.
         lookback_days: How much history to show; ``0`` shows everything.
         marker_date: Optional vertical marker for the selected forecast date.
+        lookup_date: Optional marker for the "price on a specific date" widget;
+            resolved against history when on or before the last observed day,
+            otherwise against the forecast path.
         range_selector: Add zoom/pan range buttons and a range slider.
         height: Figure height in pixels.
     """
@@ -171,6 +175,44 @@ def price_history_vs_forecast(
                     hovertemplate="%{y:,.2f} " + meta.unit + "<extra>Selected date</extra>",
                 )
             )
+
+    if lookup_date is not None:
+        target = pd.Timestamp(lookup_date).normalize()
+        hist_hit = window[window["date"].dt.normalize() == target]
+        if not hist_hit.empty:
+            figure.add_trace(
+                go.Scatter(
+                    x=[hist_hit["date"].iloc[0]],
+                    y=[float(hist_hit["price"].iloc[0])],
+                    mode="markers",
+                    marker={
+                        "size": 11,
+                        "symbol": "diamond",
+                        "color": palette.warning,
+                        "line": {"color": palette.surface, "width": 2},
+                    },
+                    name="Looked-up date",
+                    hovertemplate="%{y:,.2f} " + meta.unit + "<extra>Looked-up date</extra>",
+                )
+            )
+        elif not forecast.empty:
+            fc_hit = forecast[forecast["date"].dt.normalize() == target]
+            if not fc_hit.empty:
+                figure.add_trace(
+                    go.Scatter(
+                        x=[fc_hit["date"].iloc[0]],
+                        y=[float(fc_hit["forecast"].iloc[0])],
+                        mode="markers",
+                        marker={
+                            "size": 11,
+                            "symbol": "diamond",
+                            "color": palette.warning,
+                            "line": {"color": palette.surface, "width": 2},
+                        },
+                        name="Looked-up date",
+                        hovertemplate="%{y:,.2f} " + meta.unit + "<extra>Looked-up date</extra>",
+                    )
+                )
 
     figure.update_yaxes(title_text=f"Price ({meta.unit})")
     if range_selector:

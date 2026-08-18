@@ -91,6 +91,28 @@ def forecast_row(forecast: pd.DataFrame, target: pd.Timestamp) -> pd.Series | No
     return forecast.iloc[0]
 
 
+def price_row(prices: pd.DataFrame, target: pd.Timestamp) -> pd.Series | None:
+    """Return the historical price row on ``target``, or the nearest earlier row.
+
+    Args:
+        prices: Output of :func:`commodity_prices`.
+        target: Selected historical date.
+
+    Returns:
+        The matching row, or ``None`` when the history is empty.
+    """
+    if prices.empty:
+        return None
+    target = pd.Timestamp(target).normalize()
+    exact = prices[prices["date"].dt.normalize() == target]
+    if not exact.empty:
+        return exact.iloc[0]
+    earlier = prices[prices["date"] <= target]
+    if not earlier.empty:
+        return earlier.iloc[-1]
+    return prices.iloc[0]
+
+
 # --------------------------------------------------------------------------
 # Resampling and aggregation
 # --------------------------------------------------------------------------
